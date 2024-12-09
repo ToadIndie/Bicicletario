@@ -18,14 +18,10 @@ import java.util.List;
 public class ExternoController {
     private final EmailService emailService;
     private final CobrancaService cobrancaService;
-    private final CobrancaRepository cobrancaRepository;
-    private final CartaoDeCreditoRepository cartaoDeCreditoRepository;
 
     public ExternoController(EmailService emailService, CobrancaService cobrancaService, CobrancaRepository cobrancaRepository, CartaoDeCreditoRepository cartaoDeCreditoRepository) {
         this.emailService = emailService;
         this.cobrancaService = cobrancaService;
-        this.cobrancaRepository = cobrancaRepository;
-        this.cartaoDeCreditoRepository = cartaoDeCreditoRepository;
     }
 
     @PostMapping("/enviarEmail")
@@ -44,7 +40,7 @@ public class ExternoController {
     }
 
     @GetMapping("/cobranca/{idCobranca}")
-    public ResponseEntity<CobrancaDTO> cobranca(@PathVariable Long idCobranca) {
+    public ResponseEntity<CobrancaDTO> cobranca(@PathVariable int idCobranca) {
         Cobranca cobranca = cobrancaService.cobranca(idCobranca);
         CobrancaDTO dto = new CobrancaDTO();
         dto.setId(cobranca.getId());

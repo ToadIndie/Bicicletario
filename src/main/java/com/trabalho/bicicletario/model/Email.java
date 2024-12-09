@@ -1,16 +1,32 @@
-package com.trabalho.bicicletario.dto;
+package com.trabalho.bicicletario.model;
 
-public class EmailDTO {
-    private String email;
+import jakarta.persistence.*;
+
+@Entity
+public class Email {
+    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Integer id;
+
+    private String destinatario;
+
     private String assunto;
+
     private String mensagem;
 
+    public Integer getId() {
+        return id;
+    }
+
+    public void setId(Integer id) {
+        this.id = id;
+    }
+
     public String getEmail() {
-        return email;
+        return destinatario;
     }
 
     public void setEmail(String email) {
-        this.email = email;
+        this.destinatario = email;
     }
 
     public String getAssunto() {

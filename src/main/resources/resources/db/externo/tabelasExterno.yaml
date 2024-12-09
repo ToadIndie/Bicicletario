@@ -27,7 +27,7 @@ databaseChangeLog:
                     nullable:  false
               - column:
                   name:  mensagem
-                  type:  varchar(50)
+                  type:  varchar(255)
                   constraints:
                     nullable:  false
   - changeSet:
@@ -70,4 +70,4 @@ databaseChangeLog:
                   name:  horaFinalizacao
                   type:  TIMESTAMP
                   constraints:
-                    nullable:  false
+                    nullable:  true

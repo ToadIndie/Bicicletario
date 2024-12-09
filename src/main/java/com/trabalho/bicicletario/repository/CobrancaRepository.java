@@ -8,6 +8,6 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 @Repository
-public interface CobrancaRepository extends JpaRepository<Cobranca, Long> {
-    List<Cobranca> findByStatusIn(List<StatusCobranca> status);
+public interface CobrancaRepository extends JpaRepository<Cobranca, Integer> {
+    List<Cobranca> findByStatusIn(List<String> status);
 }

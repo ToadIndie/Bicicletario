@@ -23,7 +23,7 @@ public class CobrancaService {
     //Realiza cobranças
     public Cobranca cobranca(NovaCobrancaDTO NovaCobrancaDTO) {
         Cobranca cobranca = new Cobranca();
-        cobranca.setStatus(StatusCobranca.PENDENTE);
+        cobranca.setStatus(StatusCobranca.PENDENTE.name());
         cobranca.setHoraSolicitacao(LocalDateTime.now());
         cobranca.setValor(NovaCobrancaDTO.getValor());
         cobranca.setCiclista(NovaCobrancaDTO.getCiclista());
@@ -31,7 +31,7 @@ public class CobrancaService {
     }
 
     //Retorna cobrança por ID
-    public Cobranca cobranca(Long id) {
+    public Cobranca cobranca(int id) {
         try {
             return cobrancaRepository.findById(id).orElseThrow(() -> new Exception());
         } catch (Exception e) {
@@ -41,14 +41,15 @@ public class CobrancaService {
 
     //Chama as cobranças pendentes do banco
     public List<Cobranca> filaCobranca() {
-        List<StatusCobranca> status = List.of(StatusCobranca.PENDENTE, StatusCobranca.FALHA);
+        List<String> status = List.of(StatusCobranca.PENDENTE.name(), StatusCobranca.FALHA.name());
         return cobrancaRepository.findByStatusIn(status);
     }
 
     public List<Cobranca> processaCobrancasEmFila() {
         List<Cobranca> cobrancas = filaCobranca();
-        cobrancas.forEach(cobranca -> cobranca.setStatus(StatusCobranca.PAGA));
-        return cobrancas;
+        cobrancas.forEach(cobranca -> cobranca.setStatus(StatusCobranca.PAGA.name()));
+        cobrancas.forEach(cobranca -> cobranca.setHoraFinalizacao(LocalDateTime.now()));
+        return cobrancaRepository.saveAll(cobrancas);
     }
 
     //public void validaCartaoDeCredito(CartaoDeCreditoDTO cartaoDeCreditoDTO) {}
