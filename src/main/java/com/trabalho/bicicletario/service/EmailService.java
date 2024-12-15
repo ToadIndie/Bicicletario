@@ -1,13 +1,13 @@
 package com.trabalho.bicicletario.service;
 
+import com.trabalho.bicicletario.Exceptions.Erros;
+import com.trabalho.bicicletario.Exceptions.Exception;
 import com.trabalho.bicicletario.dto.EmailDTO;
 import com.trabalho.bicicletario.model.Email;
-import com.trabalho.bicicletario.repository.CartaoDeCreditoRepository;
-import com.trabalho.bicicletario.repository.CobrancaRepository;
 import com.trabalho.bicicletario.repository.EmailRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.mail.SimpleMailMessage;
+import org.springframework.mail.*;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
 
@@ -25,8 +25,11 @@ public class EmailService {
     @Value("${spring.mail.username}")
     private String remetente;
 
-    public String enviarEmail(EmailDTO emailDTO){
+    public Email enviarEmail(EmailDTO emailDTO){
         try {
+            if (!isValidEmail(emailDTO.getEmail()))
+                throw new Exception(Erros.EMAIL_INVALIDO);
+
             Email email = new Email();
             email.setId(null);
             email.setEmail(emailDTO.getEmail());
@@ -40,11 +43,16 @@ public class EmailService {
             mensagem.setText(emailDTO.getMensagem());
 
             enviarEmail.send(mensagem);
-            emailRepository.save(email);
-            return "Email enviado com sucesso!";
-        }catch (Exception e){
-            throw new RuntimeException(e);
+            return emailRepository.save(email);
+        } catch (MailAuthenticationException e){
+            throw new Exception(Erros.EMAIL_INEXISTENTE);
+        } catch (java.lang.Exception ex){
+            throw ex;
         }
     }
 
+    private boolean isValidEmail(String email) {
+        String emailRegex = "^[A-Za-z0-9+_.-]+@(.+)$";
+        return email != null && email.matches(emailRegex);
+    }
 }

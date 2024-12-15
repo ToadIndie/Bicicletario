@@ -1,7 +1,6 @@
 package com.trabalho.bicicletario.repository;
 
 import com.trabalho.bicicletario.model.Cobranca;
-import com.trabalho.bicicletario.model.StatusCobranca;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

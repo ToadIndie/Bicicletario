@@ -5,5 +5,5 @@ public enum StatusCobranca {
     PAGA,
     FALHA,
     CANCELADA, //estorno
-    OCUPADA;
+    OCUPADA
 }

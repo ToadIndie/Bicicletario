@@ -1,7 +1,5 @@
 package com.trabalho.bicicletario.dto;
 
-import com.trabalho.bicicletario.model.StatusCobranca;
-
 import java.time.LocalDateTime;
 
 public class CobrancaDTO {
