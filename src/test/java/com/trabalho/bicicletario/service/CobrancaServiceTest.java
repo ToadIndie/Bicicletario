@@ -101,9 +101,7 @@ public class CobrancaServiceTest {
         doReturn(false).when(cobrancaService).validaDados(1, -50.0);
 
         //Valida a exceção lançada
-        Exceptions exception = assertThrows(Exceptions.class, () -> {
-            cobrancaService.cobranca(novaCobrancaDTO);
-        });
+        Exceptions exception = assertThrows(Exceptions.class, () -> cobrancaService.cobranca(novaCobrancaDTO));
 
         //Verifica mensagem da exceção
         assertEquals(Erros.DADOS_INVALIDOS.getMensagem(), exception.getMessage());
@@ -142,9 +140,7 @@ public class CobrancaServiceTest {
         when(cobrancaRepository.findById(2)).thenReturn(Optional.empty());
 
         // Valida que a exceção personalizada é lançada
-        Exceptions exception = assertThrows(Exceptions.class, () -> {
-            cobrancaService.cobranca(2);
-        });
+        Exceptions exception = assertThrows(Exceptions.class, () -> cobrancaService.cobranca(2));
 
         // Verifica a mensagem da exceção
         assertEquals(Erros.NAO_ENCONTRADO.getMensagem(), exception.getMessage());
@@ -200,9 +196,7 @@ public class CobrancaServiceTest {
         doReturn(false).when(cobrancaService).validaDados(1, 100.0);
 
         // Valida que a exceção personalizada é lançada
-        Exceptions exception = assertThrows(Exceptions.class, () -> {
-            cobrancaService.filaCobranca(novaCobrancaDTO);
-        });
+        Exceptions exception = assertThrows(Exceptions.class, () -> cobrancaService.filaCobranca(novaCobrancaDTO));
 
         // Verifica a mensagem da exceção
         assertEquals(Erros.DADOS_INVALIDOS.getMensagem(), exception.getMessage());
@@ -257,9 +251,7 @@ public class CobrancaServiceTest {
         when(cobrancaService.cobrancas()).thenThrow(new Exceptions(Erros.DADOS_INVALIDOS));
 
         // Valida que a exceção personalizada é lançada
-        Exceptions exception = assertThrows(Exceptions.class, () -> {
-            cobrancaService.processaCobrancasEmFila();
-        });
+        Exceptions exception = assertThrows(Exceptions.class, () -> cobrancaService.processaCobrancasEmFila());
 
         // Verifica a mensagem da exceção
         assertEquals(Erros.DADOS_INVALIDOS.getMensagem(), exception.getMessage());

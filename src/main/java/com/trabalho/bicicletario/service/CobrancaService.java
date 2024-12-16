@@ -7,7 +7,6 @@ import com.trabalho.bicicletario.dto.NovaCobrancaDTO;
 import com.trabalho.bicicletario.model.CartaoDeCredito;
 import com.trabalho.bicicletario.model.Cobranca;
 import com.trabalho.bicicletario.model.StatusCobranca;
-import com.trabalho.bicicletario.repository.CartaoDeCreditoRepository;
 import com.trabalho.bicicletario.repository.CobrancaRepository;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -20,11 +19,9 @@ import java.util.NoSuchElementException;
 @Service
 public class CobrancaService {
     private final CobrancaRepository cobrancaRepository;
-    private final CartaoDeCreditoRepository cartaoDeCreditoRepository;
 
-    public CobrancaService(CobrancaRepository cobrancaRepository, CartaoDeCreditoRepository cartaoDeCreditoRepository   ) {
+    public CobrancaService(CobrancaRepository cobrancaRepository) {
         this.cobrancaRepository = cobrancaRepository;
-        this.cartaoDeCreditoRepository = cartaoDeCreditoRepository;
     }
 
     //Realiza cobranças
@@ -94,11 +91,8 @@ public class CobrancaService {
     }
 
     // ---- MÉTODOS AUXILIARES ----
-
     protected boolean validaDados(int ciclista, double valor) {
-        if (ciclista > 0 && valor > 0)
-            return true;
-        return false;
+        return ciclista > 0 && valor > 0;
     }
 
     //Chama as cobranças pendentes do banco
@@ -106,6 +100,4 @@ public class CobrancaService {
         List<String> status = List.of(StatusCobranca.PENDENTE.name(), StatusCobranca.FALHA.name());
         return cobrancaRepository.findByStatusIn(status);
     }
-
-
 }
