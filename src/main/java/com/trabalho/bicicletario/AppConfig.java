@@ -1,14 +1,13 @@
 package com.trabalho.bicicletario;
 
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Primary;
-import org.springframework.stereotype.Component;
+import org.springframework.context.annotation.Configuration;
 import org.springframework.web.client.RestTemplate;
 
-@Component
+@Configuration
 public class AppConfig {
 
-    @Bean(name = "restTemplate") @Primary
+    @Bean(name = "restTemplate")
     public RestTemplate restTemplate() {
         return new RestTemplate();
     }
