@@ -3,9 +3,9 @@ package com.trabalho.bicicletario.service;
 import static org.mockito.Mockito.*;
 import static org.junit.jupiter.api.Assertions.*;
 
-import com.trabalho.bicicletario.controller.ExternoController;
 import com.trabalho.bicicletario.dto.NovaCobrancaDTO;
 import com.trabalho.bicicletario.excecoes.Erros;
+import com.trabalho.bicicletario.excecoes.ErrosDTO;
 import com.trabalho.bicicletario.excecoes.Exceptions;
 import com.trabalho.bicicletario.model.CartaoDeCredito;
 import com.trabalho.bicicletario.model.Cobranca;
@@ -13,13 +13,11 @@ import com.trabalho.bicicletario.model.StatusCobranca;
 import com.trabalho.bicicletario.repository.CobrancaRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
-import org.mockito.Spy;
+import org.mockito.*;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.web.client.RestTemplate;
 
 import java.time.LocalDateTime;
@@ -27,23 +25,13 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
+@SpringBootTest
 class CobrancaServiceTest {
     @Mock
     private CobrancaRepository cobrancaRepository;
 
-    @Mock
-    private CartaoDeCredito cartaoDeCredito;
-
-    @Mock
-    private ResponseEntity response;
-
-    @Mock
+    @MockitoBean
     private RestTemplate restTemplate;
-
-    @InjectMocks
-    private ExternoController externoController;
-
-    private MockMvc mockMvc;
 
     @Spy
     @InjectMocks
@@ -53,7 +41,6 @@ class CobrancaServiceTest {
     void setUp() {
         //Inicializa os mock e faz a injeção na classe a ser testada
         MockitoAnnotations.openMocks(this);
-        mockMvc = MockMvcBuilders.standaloneSetup(externoController).build();
     }
 
     // ---- TESTES DO MÉTODO: cobranca() ----
@@ -260,43 +247,28 @@ class CobrancaServiceTest {
         verify(cobrancaRepository, never()).saveAll(anyList());
     }
 
-    /*
+
     // ---- TESTES DO MÉTODO: validaCartaoDeCredito() ----
     @Test
     void validaCartaoDeCredito_deveRetornarSucessoQuandoCartaoValido() throws Exception {
-        // Arrange
         CartaoDeCredito cartaoDeCredito = new CartaoDeCredito();
         cartaoDeCredito.setNumero("1234567890123456");
         ErrosDTO respostaEsperada = new ErrosDTO("200", "Dados atualizados");
 
-        when(cobrancaService.validaCartaoDeCredito(any(CartaoDeCredito.class))).thenReturn(ResponseEntity.ok(respostaEsperada));
+        ResponseEntity response = new ResponseEntity<>(HttpStatus.OK);
 
-        // Act & Assert
-        mockMvc.perform(post("/api/cobrancas/validar-cartao")
-                        .contentType("application/json")
-                        .content("{\"numero\": \"1234567890123456\"}"))
-                .andExpect(status().isOk())  // Espera status 200 OK
-                .andExpect(jsonPath("$.codigo").value("200"))  // Verifica o código de resposta
-                .andExpect(jsonPath("$.mensagem").value("Dados atualizados"));  // Verifica a mensagem
+        when(restTemplate.getForEntity("https://binlist.io/123456", String.class)).thenReturn(response);
+
+        assertEquals(cobrancaService.validaCartaoDeCredito(cartaoDeCredito), respostaEsperada);
     }
 
-    // Teste para quando ocorrer uma falha na validação do cartão
     @Test
     void validaCartaoDeCredito_deveRetornarErroQuandoFalhaNaValidacao() throws Exception {
-        // Arrange
         CartaoDeCredito cartaoDeCredito = new CartaoDeCredito();
         cartaoDeCredito.setNumero("1234567890123456");
 
-        // Quando ocorrer uma exceção no serviço de validação do cartão, retorna erro
-        when(cobrancaService.validaCartaoDeCredito(any(CartaoDeCredito.class)))
-                .thenThrow(new Exceptions(Erros.DADOS_INVALIDOS));
+        Exceptions exception = assertThrows(Exceptions.class, () -> cobrancaService.validaCartaoDeCredito(cartaoDeCredito));
 
-        // Act & Assert
-        mockMvc.perform(post("/api/cobrancas/validar-cartao")
-                        .contentType(MediaType.valueOf("application/json"))
-                        .content("{\"numero\": \"1234567890123456\"}"))
-                .andExpect(status().isBadRequest())  // Espera status 400 BAD REQUEST
-                .andExpect(jsonPath("$.codigo").value("400"))  // Verifica o código de erro
-                .andExpect(jsonPath("$.mensagem").value("DADOS_INVALIDOS"));  // Verifica a mensagem de erro
-    }*/
+        assertEquals(Erros.DADOS_INVALIDOS.getMensagem(), exception.getMessage());
+    }
 }

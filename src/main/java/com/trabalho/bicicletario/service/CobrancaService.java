@@ -8,6 +8,9 @@ import com.trabalho.bicicletario.model.CartaoDeCredito;
 import com.trabalho.bicicletario.model.Cobranca;
 import com.trabalho.bicicletario.model.StatusCobranca;
 import com.trabalho.bicicletario.repository.CobrancaRepository;
+import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
@@ -16,9 +19,12 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.NoSuchElementException;
 
-@Service
+@Service //@RequiredArgsConstructor(onConstructor = @__(@Autowired))
 public class CobrancaService {
     private final CobrancaRepository cobrancaRepository;
+
+    @Autowired
+    private RestTemplate restTemplate;
 
     public CobrancaService(CobrancaRepository cobrancaRepository) {
         this.cobrancaRepository = cobrancaRepository;
@@ -76,8 +82,6 @@ public class CobrancaService {
         String bin = cartaoDeCredito.getNumero().substring(0, 6);
 
         String url = "https://binlist.io/" + bin;
-
-        RestTemplate restTemplate = new RestTemplate();
 
         try {
             ResponseEntity<String> response = restTemplate.getForEntity(url, String.class);
