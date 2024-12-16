@@ -6,8 +6,10 @@ public class EmailDTO {
     private String assunto;
     private String mensagem;
 
-    public Integer getId() {
-        return id;
+    public EmailDTO(String email, String assunto, String mensagem) {
+        this.email = email;
+        this.assunto = assunto;
+        this.mensagem = mensagem;
     }
 
     public void setId(Integer id) {

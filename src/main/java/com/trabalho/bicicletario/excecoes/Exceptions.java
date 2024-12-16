@@ -1,9 +1,9 @@
-package com.trabalho.bicicletario.Exceptions;
+package com.trabalho.bicicletario.excecoes;
 
-public class Exception extends RuntimeException {
+public class Exceptions extends RuntimeException {
     private final Erros erro;
 
-    public Exception(Erros erro) {
+    public Exceptions(Erros erro) {
         super(erro.getMensagem());
         this.erro = erro;
     }

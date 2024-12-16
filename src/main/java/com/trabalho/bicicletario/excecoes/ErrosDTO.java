@@ -1,4 +1,4 @@
-package com.trabalho.bicicletario.Exceptions;
+package com.trabalho.bicicletario.excecoes;
 
 public class ErrosDTO {
     private String codigo;

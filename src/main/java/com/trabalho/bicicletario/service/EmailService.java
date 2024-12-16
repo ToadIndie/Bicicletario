@@ -1,11 +1,10 @@
 package com.trabalho.bicicletario.service;
 
-import com.trabalho.bicicletario.Exceptions.Erros;
-import com.trabalho.bicicletario.Exceptions.Exception;
+import com.trabalho.bicicletario.excecoes.Erros;
+import com.trabalho.bicicletario.excecoes.Exceptions;
 import com.trabalho.bicicletario.dto.EmailDTO;
 import com.trabalho.bicicletario.model.Email;
 import com.trabalho.bicicletario.repository.EmailRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.*;
 import org.springframework.mail.javamail.JavaMailSender;
@@ -15,20 +14,20 @@ import org.springframework.stereotype.Service;
 public class EmailService {
     private final EmailRepository emailRepository;
 
-    public EmailService(EmailRepository emailRepository) {
+    public EmailService(EmailRepository emailRepository, JavaMailSender enviarEmail) {
         this.emailRepository = emailRepository;
+        this.enviarEmail = enviarEmail;
     }
 
-    @Autowired
-    private JavaMailSender enviarEmail;
+    private final JavaMailSender enviarEmail;
 
     @Value("${spring.mail.username}")
     private String remetente;
 
     public Email enviarEmail(EmailDTO emailDTO){
         try {
-            if (!isValidEmail(emailDTO.getEmail()))
-                throw new Exception(Erros.EMAIL_INVALIDO);
+            if (emailDTO == null || !isValidEmail(emailDTO.getEmail()))
+                throw new Exceptions(Erros.EMAIL_INVALIDO);
 
             Email email = new Email();
             email.setId(null);
@@ -45,9 +44,7 @@ public class EmailService {
             enviarEmail.send(mensagem);
             return emailRepository.save(email);
         } catch (MailAuthenticationException e){
-            throw new Exception(Erros.EMAIL_INEXISTENTE);
-        } catch (java.lang.Exception ex){
-            throw ex;
+            throw new Exceptions(Erros.EMAIL_INEXISTENTE);
         }
     }
 

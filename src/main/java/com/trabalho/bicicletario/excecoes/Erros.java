@@ -1,4 +1,4 @@
-package com.trabalho.bicicletario.Exceptions;
+package com.trabalho.bicicletario.excecoes;
 
 public enum Erros {
     COBRANCA_FEITA(200, "Cobrança solicitada"),

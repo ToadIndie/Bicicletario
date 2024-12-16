@@ -1,4 +1,4 @@
-package com.trabalho.bicicletario.Exceptions;
+package com.trabalho.bicicletario.excecoes;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -10,8 +10,8 @@ import java.util.List;
 @RestControllerAdvice
 public class RestExceptionHandler {
 
-    @ExceptionHandler(Exception.class)
-    public ResponseEntity<List<ErrosDTO>> handleCustomException(Exception ex) {
+    @ExceptionHandler(Exceptions.class)
+    public ResponseEntity<List<ErrosDTO>> handleCustomException(Exceptions ex) {
         List<ErrosDTO> errors = new ArrayList<>();
         errors.add(new ErrosDTO(
                 String.valueOf(ex.getErro().getCodigo()),
