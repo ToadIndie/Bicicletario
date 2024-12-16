@@ -14,7 +14,7 @@ import org.mockito.*;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 
-public class EmailServiceTest {
+class EmailServiceTest {
 
     @InjectMocks
     private EmailService emailService;
