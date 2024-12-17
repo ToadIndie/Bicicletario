@@ -8,7 +8,6 @@ import com.trabalho.bicicletario.model.CartaoDeCredito;
 import com.trabalho.bicicletario.model.Cobranca;
 import com.trabalho.bicicletario.model.StatusCobranca;
 import com.trabalho.bicicletario.repository.CobrancaRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;

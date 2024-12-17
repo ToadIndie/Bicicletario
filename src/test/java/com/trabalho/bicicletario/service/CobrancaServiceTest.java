@@ -179,7 +179,7 @@ class CobrancaServiceTest {
 
 
     @Test
-    void validaCartaoDeCredito_deveRetornarSucessoQuandoCartaoValido() throws Exception {
+    void validaCartaoDeCredito_deveRetornarSucessoQuandoCartaoValido() {
         CartaoDeCredito cartaoDeCredito = new CartaoDeCredito();
         cartaoDeCredito.setNumero("1234567890123456");
         ErrosDTO respostaEsperada = new ErrosDTO("200", "Dados atualizados");
@@ -189,7 +189,7 @@ class CobrancaServiceTest {
         assertEquals(cobrancaService.validaCartaoDeCredito(cartaoDeCredito).getBody().getMensagem(), respostaEsperada.getMensagem());
     }
     @Test
-    void validaCartaoDeCredito_deveRetornarErroQuandoFalhaNaValidacao() throws Exception {
+    void validaCartaoDeCredito_deveRetornarErroQuandoFalhaNaValidacao() {
         CartaoDeCredito cartaoDeCredito = new CartaoDeCredito();
         cartaoDeCredito.setNumero("1234567890123456");
 
