@@ -41,42 +41,30 @@ class EmailServiceTest {
         emailSalvo.setAssunto(emailDTO.getAssunto());
         emailSalvo.setMensagem(emailDTO.getMensagem());
 
-        // Mock the emailRepository to return the expected emailSalvo when save() is called
         when(emailRepository.save(any(Email.class))).thenReturn(emailSalvo);
-
-        // Mock the JavaMailSender to do nothing when sending the email
         doNothing().when(enviarEmail).send(any(SimpleMailMessage.class));
 
-        // Act (call the method to be tested)
         Email resultado = emailService.enviarEmail(emailDTO);
 
-        // Assert (verify the results)
-        assertNotNull(resultado); // Verify that the email is saved
-        assertEquals(emailSalvo.getEmail(), resultado.getEmail()); // Verify the email fields match
-        assertEquals(emailSalvo.getAssunto(), resultado.getAssunto()); // Verify the subject
-        assertEquals(emailSalvo.getMensagem(), resultado.getMensagem()); // Verify the message
-
-        // Verify that the send method was called once
+        assertNotNull(resultado);
+        assertEquals(emailSalvo.getEmail(), resultado.getEmail());
+        assertEquals(emailSalvo.getAssunto(), resultado.getAssunto());
+        assertEquals(emailSalvo.getMensagem(), resultado.getMensagem());
         verify(enviarEmail, times(1)).send(any(SimpleMailMessage.class));
-        // Verify that the save method was called once with the correct Email object
         verify(emailRepository, times(1)).save(any(Email.class));
     }
 
     @Test
     void enviarEmailDeveLancarExceptionQuandoEmailInvalido() {
-        // Arranjo
         EmailDTO invalidEmailDTO = new EmailDTO("email-invalido", "Assunto", "Mensagem de invalido");
 
-        // Ação & Verificação
         Exception exception = assertThrows(Exceptions.class, () -> emailService.enviarEmail(invalidEmailDTO));
-
         assertEquals(Erros.EMAIL_INVALIDO.getMensagem(), exception.getMessage());
     }
 
     @Test
     void enviarEmailDeveLancarExceptionQuandoEmailDTOForNull() {
         Exception exception = assertThrows(Exceptions.class, () -> emailService.enviarEmail(null));
-
         assertEquals(Erros.EMAIL_INVALIDO.getMensagem(), exception.getMessage());
     }
 }
