@@ -8,7 +8,6 @@ import com.trabalho.bicicletario.model.CartaoDeCredito;
 import com.trabalho.bicicletario.model.Cobranca;
 import com.trabalho.bicicletario.model.StatusCobranca;
 import com.trabalho.bicicletario.repository.CobrancaRepository;
-import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.ResponseEntity;
@@ -19,15 +18,16 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.NoSuchElementException;
 
-@Service //@RequiredArgsConstructor(onConstructor = @__(@Autowired))
+@Service
 public class CobrancaService {
     private final CobrancaRepository cobrancaRepository;
 
-    @Autowired
-    private RestTemplate restTemplate;
+    private final RestTemplate restTemplate;
 
-    public CobrancaService(CobrancaRepository cobrancaRepository) {
+    public CobrancaService(CobrancaRepository cobrancaRepository,
+                           @Qualifier("restTemplate") RestTemplate restTemplate) {
         this.cobrancaRepository = cobrancaRepository;
+        this.restTemplate = restTemplate;
     }
 
     //Realiza cobranças
@@ -79,18 +79,23 @@ public class CobrancaService {
     }
 
     public ResponseEntity<ErrosDTO> validaCartaoDeCredito(CartaoDeCredito cartaoDeCredito) {
-        String bin = cartaoDeCredito.getNumero().substring(0, 6);
+        if (cartaoDeCredito.getNumero() == null || cartaoDeCredito.getNumero().length() != 16) {
+            throw new Exceptions(Erros.DADOS_INVALIDOS);
+        }
 
+        String bin = cartaoDeCredito.getNumero().substring(0, 6);
         String url = "https://binlist.io/" + bin;
 
         try {
             ResponseEntity<String> response = restTemplate.getForEntity(url, String.class);
 
-            response.getStatusCode().is2xxSuccessful();
-            return ResponseEntity.ok(new ErrosDTO("200", "Dados atualizados"));
+            if (!response.getStatusCode().is2xxSuccessful()) {
+                throw new Exceptions(Erros.DADOS_INVALIDOS);
+            }
 
+            return ResponseEntity.ok(new ErrosDTO("200", "Dados atualizados"));
         } catch (Exception ex) {
-            throw new Exceptions(Erros.DADOS_INVALIDOS);
+            throw new Exceptions(Erros.NAO_ENCONTRADO);
         }
     }
 
